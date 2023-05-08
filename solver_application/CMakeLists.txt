@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 3.22)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(CMAKE_GENERATOR_BIN OFF)
 option(CPACK_GENERATOR_DEB OFF)
 option(CPACK_GENERATOR_RPM OFF)
 option(CPACK_GENERATOR_MSI OFF)
 option(CPACK_GENERATOR_DMG OFF)
+
 
 project(solver)
 
@@ -37,7 +39,6 @@ if(CPACK_GENERATOR_MSI)
     set(CPACK_GENERATOR "WIX")
 endif()
 if(CPACK_GENERATOR_DMG)
-    set(MACOSX_BUNDLE TRUE)
     set(CPACK_GENERATOR "DragNDrop")
 endif()
 include(CPack)

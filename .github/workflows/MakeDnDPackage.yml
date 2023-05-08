@@ -8,20 +8,18 @@ on:
 jobs:
   release:
     name: release
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
 
       - name: Building preparation
-        run:  sudo apt update && sudo apt install -y cmake && sudo apt install -y g++
+        run:  cmake --version
 
       - name: Build Solver App with Drag and Drop Generator
-        run: cmake --version &&  mkdir solver_application/build && cd solver_application/build || cmake -DCPACK_GENERATOR_DMG=ON .. || make package || make package_source || cd .. || mkdir artifacts || mv build/*.dmg artifacts || mv build/*.zip artifacts || mv build/*.tar.gz artifacts
-
+        run: cmake --version &&  mkdir solver_application/build && cd solver_application/build && cmake -DCPACK_GENERATOR_DMG=ON .. && make && cpack -G DragNDrop && cpack -G TGZ && cpack -G ZIP && cd .. && mkdir artifacts && mv build/solver-0.1.1-Darwin.dmg  artifacts && mv build/solver-0.1.1-Darwin.zip artifacts && mv build/solver-0.1.1-Darwin.tar.gz artifacts && cd artifacts && ls
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: solver_application/artifacts/*
         id: "automatic_releases"
-

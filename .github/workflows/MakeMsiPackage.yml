@@ -1,0 +1,26 @@
+name: Make MSI Package
+
+on:
+  push:
+    tags:
+       - "v*.*.*-msi"
+
+jobs:
+  release:
+    name: release
+    runs-on: windows-latest
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - name: Building preparation
+        run:  cmake --version
+      - name: Build Solver App with WIX Generator
+        run: mkdir solver_application/build && cd solver_application/build && cmake -DCPACK_GENERATOR_MSI=ON .. && cmake --build . && cpack -C CPackConfig.cmake -G WIX && cmake .. && cmake --build . &&cpack -C CPackConfig.cmake -G TGZ && cpack -C CPackConfig.cmake -G ZIP && cd .. && mkdir artifacts && mv build/*.msi artifacts && mv build/*.zip artifacts && mv build/*.tar.gz artifacts
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: solver_application/artifacts/*
+        id: "automatic_releases"
